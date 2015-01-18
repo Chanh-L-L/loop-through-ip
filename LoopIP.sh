@@ -1,28 +1,28 @@
 #!bin/sh
 
-ip="130.216.158"
+ipaddress="130.216.158"
 
 # the last 3 digits of the ipaddress
 suffix=0
 
 for i in {0..510}
 do
-	if [ "$ip.$suffix" != "$ip.0" ] && [ "$ip.$suffix" != "$ip.255" ]
+	if [ "$ipaddress.$suffix" != "$ipaddress.0" ] && [ "$ipaddress.$suffix" != "$ipaddress.255" ]
 	then
-		curl "$ip.$suffix:80" -m 1
+		curl -m 1 "$ipaddress.$suffix:80"
 		if [ "$?" = "0" ]
 		then
-			echo "$ip.$suffix:80 OK" >> output.txt
+			echo "$ipaddress.$suffix:80 OK" >> output.txt
 		else 
-			echo "$ip.$suffix:80 FAIL" >> output.txt
+			echo "$ipaddress.$suffix:80 FAIL" >> output.txt
 		fi
 
-		curl "$ip.$suffix:443" -m 1
+		curl -m 1 "$ipaddress.$suffix:443"
 		if [ "$?" = "0" ]
 		then
-			echo "$ip.$suffix:443 OK" >> output.txt
+			echo "$ipaddress.$suffix:443 OK" >> output.txt
 		else
-			echo "$ip.$suffix:443 FAIL" >> output.txt
+			echo "$ipaddress.$suffix:443 FAIL" >> output.txt
 		fi
 	fi
 
@@ -32,6 +32,6 @@ do
 	if [ "$i" = "254" ]
 	then
 		suffix=0
-		ip="130.216.159"
+		ipaddress="130.216.159"
 	fi 
 done
