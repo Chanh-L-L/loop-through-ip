@@ -2,36 +2,30 @@
 
 ipaddress="130.216.158"
 
-# the last 3 digits of the ipaddress
-suffix=0
+func_curl() {
+	curl -m 1 "$1:$2"
+	
+	if [ "$?" = "0" ]
+	then
+		echo "$1:$2 OK" >> output.txt
+	else 
+		echo "$1:$2 FAIL" >> output.txt
+	fi
+}
 
 for i in {0..510}
 do
+	suffix=$((i%255))
+	
 	if [ "$ipaddress.$suffix" != "$ipaddress.0" ] && [ "$ipaddress.$suffix" != "$ipaddress.255" ]
 	then
-		curl -m 1 "$ipaddress.$suffix:80"
-		if [ "$?" = "0" ]
-		then
-			echo "$ipaddress.$suffix:80 OK" >> output.txt
-		else 
-			echo "$ipaddress.$suffix:80 FAIL" >> output.txt
-		fi
-
-		curl -m 1 "$ipaddress.$suffix:443"
-		if [ "$?" = "0" ]
-		then
-			echo "$ipaddress.$suffix:443 OK" >> output.txt
-		else
-			echo "$ipaddress.$suffix:443 FAIL" >> output.txt
-		fi
+		func_curl "$ipaddress.$suffix" 80
+		func_curl "$ipaddress.$suffix" 443
 	fi
-
-	((suffix++))
 	
-	# reset the suffix and move to 130.216.159
+	# Move to 130.216.159
 	if [ "$i" = "254" ]
 	then
-		suffix=0
 		ipaddress="130.216.159"
 	fi 
 done
